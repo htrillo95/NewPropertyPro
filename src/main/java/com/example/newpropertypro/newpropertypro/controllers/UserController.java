@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -23,16 +26,17 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest) {
         // Call the UserService to authenticate the user
         boolean isAuthenticated = userService.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword());
 
+        Map<String, String> response = new HashMap<>();
         if (isAuthenticated) {
-            return ResponseEntity.ok("Login successful");
+            response.put("message", "Login successful");
+            return ResponseEntity.ok(response); // Return a JSON object
         } else {
-            return ResponseEntity.status(401).body("Invalid credentials");
+            response.put("error", "Invalid credentials");
+            return ResponseEntity.status(401).body(response); // Return a JSON object
         }
-
     }
-
 }
