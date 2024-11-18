@@ -15,6 +15,7 @@ public class Property {
     private String name;
     private String address;
     private double rentAmount;
+    private String propertyLink;
 
     // Constructors
     public Property() {}
@@ -51,4 +52,13 @@ public class Property {
     public void setRentAmount(double rentAmount) {
         this.rentAmount = rentAmount;
     }
+
+    public String getPropertyLink() {
+        return propertyLink;
+    }
+
+    public void setPropertyLink(String propertyLink) {
+        this.propertyLink = propertyLink;
+    }
+
 }
