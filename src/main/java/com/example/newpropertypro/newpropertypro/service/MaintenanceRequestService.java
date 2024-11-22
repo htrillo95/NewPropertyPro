@@ -28,6 +28,11 @@ public class MaintenanceRequestService {
         return repository.findAll();
     }
 
+    // Get maintenance requests for a specific tenant
+    public List<MaintenanceRequest> getRequestsByTenantId(Long tenantId) {
+        return repository.findByTenantId(tenantId);
+    }
+
     // Get a maintenance request by ID
     public Optional<MaintenanceRequest> getRequestById(Long id) {
         return repository.findById(id);

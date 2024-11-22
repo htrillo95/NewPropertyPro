@@ -14,18 +14,19 @@ public class MaintenanceRequest {
     @Column(nullable = false)
     private String description;
 
-    private String tenantName;
+    @Column(nullable = false)
+    private Long tenantId; // Required to link the request to a tenant
 
-    private String status = "Pending"; // Default status
+    private String status = "Pending";
 
-    private LocalDateTime createdAt = LocalDateTime.now(); // Automatically set when the request is created
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     // Constructors
     public MaintenanceRequest() {}
 
-    public MaintenanceRequest(String description, String tenantName) {
+    public MaintenanceRequest(String description, Long tenantId) {
         this.description = description;
-        this.tenantName = tenantName;
+        this.tenantId = tenantId;
     }
 
     // Getters and Setters
@@ -45,12 +46,12 @@ public class MaintenanceRequest {
         this.description = description;
     }
 
-    public String getTenantName() {
-        return tenantName;
+    public Long getTenantId() {
+        return tenantId;
     }
 
-    public void setTenantName(String tenantName) {
-        this.tenantName = tenantName;
+    public void setTenantId(Long tenantId) {
+        this.tenantId = tenantId;
     }
 
     public String getStatus() {

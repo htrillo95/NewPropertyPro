@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -19,18 +20,18 @@ public class MaintenanceRequestController {
         this.maintenanceRequestService = maintenanceRequestService;
     }
 
-    // Get all maintenance requests
+    // Get all maintenance requests (Admin)
     @GetMapping
-    public ResponseEntity<?> getAllRequests() {
-        return ResponseEntity.ok(maintenanceRequestService.getAllRequests());
+    public ResponseEntity<List<MaintenanceRequest>> getAllRequests() {
+        List<MaintenanceRequest> requests = maintenanceRequestService.getAllRequests();
+        return ResponseEntity.ok(requests);
     }
 
-    // Get a specific maintenance request by ID
-    @GetMapping("/{id}")
-    public ResponseEntity<MaintenanceRequest> getRequestById(@PathVariable Long id) {
-        return maintenanceRequestService.getRequestById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    // Get requests by tenantId (Tenant)
+    @GetMapping("/by-tenant")
+    public ResponseEntity<List<MaintenanceRequest>> getRequestsByTenantId(@RequestParam Long tenantId) {
+        List<MaintenanceRequest> requests = maintenanceRequestService.getRequestsByTenantId(tenantId);
+        return ResponseEntity.ok(requests);
     }
 
     // Create a new maintenance request
@@ -48,15 +49,15 @@ public class MaintenanceRequestController {
 
         if (requestOptional.isPresent()) {
             MaintenanceRequest request = requestOptional.get();
-            request.setStatus(status); // Update the status
-            maintenanceRequestService.saveRequest(request); // Save the updated request
-            return ResponseEntity.ok(request); // Return the updated request
+            request.setStatus(status);
+            maintenanceRequestService.saveRequest(request);
+            return ResponseEntity.ok(request);
         }
 
-        return ResponseEntity.notFound().build(); // Return 404 if not found
+        return ResponseEntity.notFound().build();
     }
 
-    // Delete a maintenance request by ID
+    // Delete a maintenance request
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRequest(@PathVariable Long id) {
         maintenanceRequestService.deleteRequest(id);
