@@ -4,6 +4,7 @@ import com.example.newpropertypro.newpropertypro.models.User;
 import com.example.newpropertypro.newpropertypro.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.Optional;
 
 @Service
@@ -16,17 +17,15 @@ public class UserService {
     }
 
     /**
-     * Authenticate user by checking if the username exists and if the provided password matches.
+     * Validate user by checking if the username exists and the provided password matches.
      */
-    public boolean authenticateUser(String username, String password) {
-        // For now, comparing plain text passwords (not secure for production)
+    public Optional<User> validateUser(String username, String password) {
         return userRepository.findByUsername(username)
-                .map(user -> user.getPassword().equals(password))
-                .orElse(false);
+                .filter(user -> user.getPassword().equals(password));
     }
 
     /**
-     * Save a new user to the database. You may want to add a check here to avoid duplicate usernames.
+     * Save a new user to the database.
      */
     public User saveUser(User user) {
         return userRepository.save(user);
