@@ -33,6 +33,20 @@ public class PropertyService {
         return propertyRepository.findAll();
     }
 
+    // Filter properties by name, address, or rent range
+    public List<Property> filterProperties(String name, String address, Double minRent, Double maxRent) {
+        if (name != null) {
+            return propertyRepository.findByNameContainingIgnoreCase(name);
+        }
+        if (address != null) {
+            return propertyRepository.findByAddressContainingIgnoreCase(address);
+        }
+        if (minRent != null && maxRent != null) {
+            return propertyRepository.findByRentAmountBetween(minRent, maxRent);
+        }
+        return propertyRepository.findAll(); // If no filters, return all properties
+    }
+
     // Update a property
     public Property updateProperty(Long id, Property propertyDetails) {
         return propertyRepository.findById(id).map(property -> {

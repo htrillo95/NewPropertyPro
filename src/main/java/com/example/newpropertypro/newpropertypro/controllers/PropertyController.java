@@ -39,6 +39,22 @@ public class PropertyController {
         return propertyService.findAllProperties();
     }
 
+    // Filter properties by query parameters
+    @GetMapping("/filter")
+    public List<Property> getFilteredProperties(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String address,
+            @RequestParam(required = false) Double minRent,
+            @RequestParam(required = false) Double maxRent) {
+        System.out.println("Filter endpoint hit with parameters:");
+        System.out.println("Name: " + name);
+        System.out.println("Address: " + address);
+        System.out.println("Min Rent: " + minRent);
+        System.out.println("Max Rent: " + maxRent);
+
+        return propertyService.filterProperties(name, address, minRent, maxRent);
+    }
+
     // Update a property by ID
     @PutMapping("/{id}")
     public ResponseEntity<Property> updateProperty(@PathVariable Long id, @RequestBody Property propertyDetails) {
