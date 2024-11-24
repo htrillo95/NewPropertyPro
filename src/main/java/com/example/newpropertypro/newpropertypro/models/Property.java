@@ -1,26 +1,37 @@
 package com.example.newpropertypro.newpropertypro.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "property") // Optional: Explicitly define table name
 public class Property {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-    private String address;
-    private double rentAmount;
-    private String propertyLink;
+    @Column(nullable = false)
+    private String name; // Property name (required)
+
+    private String address; // Optional property address
+
+    private Double rentAmount; // Optional rent amount
+
+    @Column(nullable = false)
+    private String propertyLink; // Link to external listing (e.g., Zillow)
+
+    private String imageUrl; // Optional image URL for preview
 
     // Constructors
     public Property() {}
 
-    // Getters and Setters
+    public Property(String name, String propertyLink, String imageUrl) {
+        this.name = name;
+        this.propertyLink = propertyLink;
+        this.imageUrl = imageUrl;
+    }
+
+    // Getters and setters
     public Long getId() {
         return id;
     }
@@ -45,11 +56,11 @@ public class Property {
         this.address = address;
     }
 
-    public double getRentAmount() {
+    public Double getRentAmount() {
         return rentAmount;
     }
 
-    public void setRentAmount(double rentAmount) {
+    public void setRentAmount(Double rentAmount) {
         this.rentAmount = rentAmount;
     }
 
@@ -61,4 +72,11 @@ public class Property {
         this.propertyLink = propertyLink;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }

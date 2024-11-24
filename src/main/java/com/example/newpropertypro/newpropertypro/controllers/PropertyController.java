@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//CRUD endpoints for Property
-
 @RestController
 @RequestMapping("/api/properties")
 public class PropertyController {
@@ -21,11 +19,13 @@ public class PropertyController {
         this.propertyService = propertyService;
     }
 
+    // Create a new property
     @PostMapping
     public Property createProperty(@RequestBody Property property) {
         return propertyService.saveProperty(property);
     }
 
+    // Get a property by ID
     @GetMapping("/{id}")
     public ResponseEntity<Property> getPropertyById(@PathVariable Long id) {
         return propertyService.findPropertyById(id)
@@ -33,20 +33,29 @@ public class PropertyController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    // Get all properties
     @GetMapping
     public List<Property> getAllProperties() {
         return propertyService.findAllProperties();
     }
 
+    // Update a property by ID
     @PutMapping("/{id}")
     public ResponseEntity<Property> updateProperty(@PathVariable Long id, @RequestBody Property propertyDetails) {
         Property updatedProperty = propertyService.updateProperty(id, propertyDetails);
         return updatedProperty != null ? ResponseEntity.ok(updatedProperty) : ResponseEntity.notFound().build();
     }
 
+    // Delete a property by ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProperty(@PathVariable Long id) {
-        propertyService.deleteProperty(id);
-        return ResponseEntity.noContent().build();
+        try {
+            propertyService.deleteProperty(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).build(); // Property not found
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build(); // Generic server error
+        }
     }
 }
