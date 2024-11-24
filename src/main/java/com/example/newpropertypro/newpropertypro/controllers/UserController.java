@@ -6,6 +6,7 @@ import com.example.newpropertypro.newpropertypro.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +24,12 @@ public class UserController {
 
     @PostMapping("/register")
     public User registerUser(@RequestBody User user) {
+        // Hash the password
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
+
+        // Save user to the database (logic unchanged)
         return userService.saveUser(user);
     }
 

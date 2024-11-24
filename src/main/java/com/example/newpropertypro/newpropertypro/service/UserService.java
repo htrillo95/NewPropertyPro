@@ -4,6 +4,7 @@ import com.example.newpropertypro.newpropertypro.models.User;
 import com.example.newpropertypro.newpropertypro.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
@@ -19,9 +20,11 @@ public class UserService {
     /**
      * Validate user by checking if the username exists and the provided password matches.
      */
-    public Optional<User> validateUser(String username, String password) {
+    public Optional<User> validateUser(String username, String rawPassword) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
         return userRepository.findByUsername(username)
-                .filter(user -> user.getPassword().equals(password));
+                .filter(user -> passwordEncoder.matches(rawPassword, user.getPassword()));
     }
 
     /**
