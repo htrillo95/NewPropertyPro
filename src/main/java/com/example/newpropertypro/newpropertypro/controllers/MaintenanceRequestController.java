@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map; // To support Map in responses
 
 @RestController
 @RequestMapping("/api/maintenance-request")
@@ -20,11 +20,11 @@ public class MaintenanceRequestController {
         this.maintenanceRequestService = maintenanceRequestService;
     }
 
-    // Get all maintenance requests (Admin)
+    // Get all maintenance requests (Admin) with tenant usernames
     @GetMapping
-    public ResponseEntity<List<MaintenanceRequest>> getAllRequests() {
-        List<MaintenanceRequest> requests = maintenanceRequestService.getAllRequests();
-        return ResponseEntity.ok(requests);
+    public ResponseEntity<List<Map<String, Object>>> getAllRequests() {
+        List<Map<String, Object>> requestsWithUsers = maintenanceRequestService.getAllRequestsWithUsers();
+        return ResponseEntity.ok(requestsWithUsers);
     }
 
     // Get requests by tenantId (Tenant)
@@ -45,16 +45,9 @@ public class MaintenanceRequestController {
     public ResponseEntity<MaintenanceRequest> updateStatus(
             @PathVariable Long id,
             @RequestParam String status) {
-        Optional<MaintenanceRequest> requestOptional = maintenanceRequestService.getRequestById(id);
-
-        if (requestOptional.isPresent()) {
-            MaintenanceRequest request = requestOptional.get();
-            request.setStatus(status);
-            maintenanceRequestService.saveRequest(request);
-            return ResponseEntity.ok(request);
-        }
-
-        return ResponseEntity.notFound().build();
+        return maintenanceRequestService.updateStatus(id, status)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     // Delete a maintenance request

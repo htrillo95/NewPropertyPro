@@ -15,7 +15,7 @@ public class MaintenanceRequest {
     private String description;
 
     @Column(nullable = false)
-    private Long tenantId; // Required to link the request to a tenant
+    private Long tenantId; // Link request to tenant user
 
     private String status = "Pending";
 
