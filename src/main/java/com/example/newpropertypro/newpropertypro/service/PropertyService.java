@@ -33,36 +33,20 @@ public class PropertyService {
         return propertyRepository.findAll();
     }
 
-    // Filter properties by name, address, or rent range
-    public List<Property> filterProperties(String name, String address, Double minRent, Double maxRent) {
-        if (name != null) {
-            return propertyRepository.findByNameContainingIgnoreCase(name);
-        }
-        if (address != null) {
-            return propertyRepository.findByAddressContainingIgnoreCase(address);
-        }
-        if (minRent != null && maxRent != null) {
-            return propertyRepository.findByRentAmountBetween(minRent, maxRent);
-        }
-        return propertyRepository.findAll(); // If no filters, return all properties
-    }
-
-    // Update a property
-    public Property updateProperty(Long id, Property propertyDetails) {
-        return propertyRepository.findById(id).map(property -> {
-            property.setName(propertyDetails.getName());
-            property.setAddress(propertyDetails.getAddress());
-            property.setRentAmount(propertyDetails.getRentAmount());
-            property.setPropertyLink(propertyDetails.getPropertyLink());
-            return propertyRepository.save(property);
-        }).orElse(null);
-    }
-
-    // Delete a property
+    // Delete a property by ID
     public void deleteProperty(Long id) {
         if (!propertyRepository.existsById(id)) {
             throw new IllegalArgumentException("Property with ID " + id + " does not exist.");
         }
         propertyRepository.deleteById(id);
+    }
+
+    // Delete multiple properties
+    public void deleteProperties(List<Long> ids) {
+        ids.forEach(id -> {
+            if (propertyRepository.existsById(id)) {
+                propertyRepository.deleteById(id);
+            }
+        });
     }
 }

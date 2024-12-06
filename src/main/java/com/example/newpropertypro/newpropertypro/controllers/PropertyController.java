@@ -39,29 +39,6 @@ public class PropertyController {
         return propertyService.findAllProperties();
     }
 
-    // Filter properties by query parameters
-    @GetMapping("/filter")
-    public List<Property> getFilteredProperties(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String address,
-            @RequestParam(required = false) Double minRent,
-            @RequestParam(required = false) Double maxRent) {
-        System.out.println("Filter endpoint hit with parameters:");
-        System.out.println("Name: " + name);
-        System.out.println("Address: " + address);
-        System.out.println("Min Rent: " + minRent);
-        System.out.println("Max Rent: " + maxRent);
-
-        return propertyService.filterProperties(name, address, minRent, maxRent);
-    }
-
-    // Update a property by ID
-    @PutMapping("/{id}")
-    public ResponseEntity<Property> updateProperty(@PathVariable Long id, @RequestBody Property propertyDetails) {
-        Property updatedProperty = propertyService.updateProperty(id, propertyDetails);
-        return updatedProperty != null ? ResponseEntity.ok(updatedProperty) : ResponseEntity.notFound().build();
-    }
-
     // Delete a property by ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProperty(@PathVariable Long id) {
@@ -70,6 +47,17 @@ public class PropertyController {
             return ResponseEntity.noContent().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).build(); // Property not found
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build(); // Generic server error
+        }
+    }
+
+    // Batch delete properties
+    @DeleteMapping("/batch")
+    public ResponseEntity<Void> deleteProperties(@RequestBody List<Long> ids) {
+        try {
+            propertyService.deleteProperties(ids);
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.status(500).build(); // Generic server error
         }
